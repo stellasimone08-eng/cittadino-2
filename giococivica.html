@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cittadino 2.0: L'Algoritmo della Sicurezza - Simone Stella</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #020617;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+        /* Stili di stampa per il certificato finale */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: white !important;
+                color: black !important;
+            }
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+        }
+        /* Animazione d'onda sonora per la fisica */
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+        .wave-bar {
+            animation: wave 1.2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500/30 selection:text-emerald-300">
+
+    <!-- BARRA INFORMATIVA SUPERIORE (SUL COMPITO DI REALTÀ) -->
+    <header class="no-print border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 p-2.5 rounded-xl">
+                    <i class="fa-solid fa-gauge-high text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold font-display text-white tracking-wide">Cittadino 2.0: L'Algoritmo della Sicurezza</h1>
+                    <p class="text-xs text-slate-400">Compito di Realtà di Educazione Civica • Simone Stella 4LSB</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-semibold px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-slate-300">
+                    <i class="fa-solid fa-graduation-cap text-emerald-400 mr-1.5"></i> IIS "Maria Pia"
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- STRUTTURA APPLICATIVA PRINCIPALE (DASHBOARD) -->
+    <main class="no-print flex-1 max-w-7xl mx-auto w-full p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- MENU DI NAVIGAZIONE LATERALE -->
+        <nav class="lg:col-span-1 bg-slate-950/60 border border-slate-800 rounded-3xl p-5 flex flex-col gap-3 h-fit">
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest px-2 mb-2">Moduli Didattici</h3>
+            
+            <button onclick="attivaHub('welcome')" id="btn-welcome" class="hub-btn flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-left transition-all bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/10">
+                <span class="flex items-center gap-3 text-sm">
+                    <i class="fa-solid fa-house"></i> Dashboard
+                </span>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+
+            <button onclick="attivaHub('storia')" id="btn-storia" class="hub-btn flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-left transition-all text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent">
+                <span class="flex items-center gap-3 text-sm">
+                    <i class="fa-solid fa-landmark"></i> 1. Storia (Illuminismo)
+                </span>
+                <span class="text-xs bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full" id="status-storia">0%</span>
+            </button>
+
+            <button onclick="attivaHub('umanesimo')" id="btn-umanesimo" class="hub-btn flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-left transition-all text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent">
+                <span class="flex items-center gap-3 text-sm">
+                    <i class="fa-solid fa-brain"></i> 2. Umanesimo (Etica)
+                </span>
+                <span class="text-xs bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full" id="status-umanesimo">0%</span>
+            </button>
+
+            <button onclick="attivaHub('fisica')" id="btn-fisica" class="hub-btn flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-left transition-all text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent">
+                <span class="flex items-center gap-3 text-sm">
+                    <i class="fa-solid fa-helmet-safety"></i> 3. Fisica (Segnaletica)
+                </span>
+                <span class="text-xs bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full" id="status-fisica">0%</span>
+            </button>
+
+            <button onclick="attivaHub('matematica')" id="btn-matematica" class="hub-btn flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-left transition-all text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent">
+                <span class="flex items-center gap-3 text-sm">
+                    <i class="fa-solid fa-chart-pie"></i> 4. Matematica (Green)
+                </span>
+                <span class="text-xs bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full" id="status-matematica">0%</span>
+            </button>
+
+            <button onclick="attivaHub('scienze')" id="btn-scienze" class="hub-btn flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-left transition-all text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent">
+                <span class="flex items-center gap-3 text-sm">
+                    <i class="fa-solid fa-recycle"></i> 5. Scienze (RAEE)
+                </span>
+                <span class="text-xs bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full" id="status-scienze">0%</span>
+            </button>
+
+            <button onclick="attivaHub('arte')" id="btn-arte" class="hub-btn flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-left transition-all text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent">
+                <span class="flex items-center gap-3 text-sm">
+                    <i class="fa-solid fa-city"></i> 6. Arte (Smart City)
+                </span>
+                <span class="text-xs bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full" id="status-arte">0%</span>
+            </button>
+
+            <button onclick="attivaHub('certificato')" id="btn-certificato" class="hub-btn flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-left transition-all text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent">
+                <span class="flex items-center gap-3 text-sm">
+                    <i class="fa-solid fa-award"></i> Certificato Finale
+                </span>
+                <i class="fa-solid fa-lock text-xs text-red-500" id="lock-certificato"></i>
+            </button>
+
+            <!-- STATISTICHE CORRENTI -->
+            <div class="border-t border-slate-800 mt-4 pt-4 px-2 space-y-3">
+                <div class="flex justify-between text-xs">
+                    <span class="text-slate-500">Punti Sicurezza:</span>
+                    <span id="score-counter" class="font-bold text-emerald-400">0 / 600</span>
+                </div>
+                <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden">
+                    <div id="score-progressbar" class="bg-emerald-500 h-full w-0 transition-all duration-500"></div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- AREA CONTENUTO DINAMICO -->
+        <section class="lg:col-span-3 bg-slate-950/40 border border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col justify-between min-h-[580px]">
+            
+            <!-- HUB WELCOME -->
+            <div id="hub-welcome" class="hub-panel space-y-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest font-display">Centrale di Controllo 2.0</span>
+                        <h2 class="text-3xl font-bold font-display text-white mt-1">Cittadino 2.0: L'Algoritmo della Sicurezza</h2>
+                    </div>
+                </div>
+
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    Benvenuto nel simulatore interattivo di Educazione Civica progettato da <b>Simone Stella</b>. Questa applicazione unisce le materie umanistiche, scientifiche, storiche e artistiche del piano di studi in un percorso coerente orientato alla comprensione della sicurezza della nostra società e della cittadinanza attiva globale.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex gap-4 items-start">
+                        <span class="text-orange-400 text-2xl mt-1"><i class="fa-solid fa-shield-halved"></i></span>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Radici Storiche, Etiche e Fisiche</h4>
+                            <p class="text-xs text-slate-400 mt-1">Dall'eredità illuminista della ragione all'analisi critica delle fake news, fino alle leggi della fisica applicate alla segnaletica e ai DPI nel cantiere.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex gap-4 items-start">
+                        <span class="text-purple-400 text-2xl mt-1"><i class="fa-solid fa-leaf"></i></span>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Sostenibilità, Scienza e Arte</h4>
+                            <p class="text-xs text-slate-400 mt-1">L'economia circolare in numeri, la tutela ambientale tramite il riciclo RAEE e la pianificazione estetica ed ecologica delle Smart City.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h4 class="font-bold text-emerald-400 text-sm">Pronto per iniziare il percorso?</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">Visita gli Hub per accumulare i punti e sbloccare il certificato.</p>
+                    </div>
+                    <button onclick="attivaHub('storia')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs px-5 py-3 rounded-xl transition">
+                        Avvia Modulo 1 (Storia) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- HUB STORIA (DALLA RAGIONE ALL'ALGORITMO) -->
+            <div id="hub-storia" class="hub-panel hidden space-y-6">
+                <div>
+                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest font-display">Modulo 1 • Storia</span>
+                    <h2 class="text-3xl font-bold font-display text-white mt-1">Dalla Ragione all'Algoritmo</h2>
+                    <p class="text-xs text-slate-400 italic mt-1">L'eredità dell'Illuminismo nella cittadinanza globale</p>
+                </div>
+
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    L'Illuminismo del XVIII secolo ha introdotto l'idea che la società debba essere guidata dalla <b>ragione critica</b>, dal contratto sociale e dai diritti universali inalienabili, liberandoci dai dogmi del passato. Oggi la nostra cittadinanza si esercita nello spazio digitale (Cittadinanza Globale 2.0) regolato da algoritmi e intelligenze artificiali. Come ereditiamo questa lezione storica?
+                </p>
+
+                <!-- SCENARIO DI GIOCO DECISIONALE STORIA -->
+                <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4">
+                    <div class="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-landmark"></i> Dilemma del Cittadino Illuminista 2.0
+                    </div>
+                    <h4 class="text-white font-bold text-sm leading-snug">
+                        Un comune decide di affidare a un algoritmo di intelligenza artificiale l'assegnazione automatica delle borse di studio e dei sussidi sociali. Tuttavia, analizzando i risultati, emerge che l'algoritmo discrimina involontariamente i residenti di alcune zone svantaggiate a causa di dati storici sbilanciati. Come si comporta il moderno cittadino "illuminista"?
+                    </h4>
+
+                    <div class="grid grid-cols-1 gap-3 pt-2">
+                        <button onclick="scegliStoria(1)" class="option-btn text-left p-4 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:bg-cyan-500/5 transition text-xs text-slate-300">
+                            <b>Opzione A:</b> Accetto la decisione della macchina. La tecnologia è neutrale, matematica e superiore al giudizio umano, quindi la sua decisioni è indiscutibile.
+                        </button>
+                        <button onclick="scegliStoria(2)" class="option-btn text-left p-4 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:bg-cyan-500/5 transition text-xs text-slate-300">
+                            <b>Opzione B:</b> Applico la ragione critica illuminista. Pretendo la trasparenza dell'algoritmo e l'auditing umano, poiché nessun algoritmo può violare i diritti di eguaglianza e il patto sociale.
+                        </button>
+                    </div>
+
+                    <!-- FEEDBACK DINAMICO -->
+                    <div id="feedback-storia" class="hidden p-4 rounded-xl text-xs leading-relaxed"></div>
+                </div>
+            </div>
+
+            <!-- HUB UMANESIMO (FILOSOFIA / ITALIANO) -->
+            <div id="hub-umanesimo" class="hub-panel hidden space-y-6">
+                <div>
+                    <span class="text-xs font-bold text-orange-400 uppercase tracking-widest font-display">Modulo 2 • Filosofia e Italiano</span>
+                    <h2 class="text-3xl font-bold font-display text-white mt-1">L'Etica della Responsabilità e della Parola</h2>
+                </div>
+
+                <p class="text-sm text-slate-400">
+                    Siamo immersi nella "società del rischio". Come cittadini 2.0, dobbiamo saper valutare criticamente l'impatto dei nostri comportamenti e delle nostre fonti informative.
+                </p>
+
+                <!-- SCENARIO DI GIOCO DECISIONALE -->
+                <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4">
+                    <div class="flex items-center gap-2 text-orange-400 text-xs font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-clipboard-question"></i> Dilemma della Sicurezza Etica
+                    </div>
+                    <h4 class="text-white font-bold text-sm leading-snug">
+                        Ti imbatti in un articolo web allarmante che dichiara che un impianto industriale sta rilasciando polveri tossiche nell'aria, ma la fonte è un blog sconosciuto e sensazionalista. Cosa fai?
+                    </h4>
+
+                    <div class="grid grid-cols-1 gap-3 pt-2">
+                        <button onclick="scegliUmanesimo(1)" class="option-btn text-left p-4 rounded-xl border border-slate-800 hover:border-orange-500/50 hover:bg-orange-500/5 transition text-xs text-slate-300">
+                            <b>Opzione A:</b> Condivido subito l'articolo sui social per allertare il maggior numero di concittadini. La velocità è sicurezza.
+                        </button>
+                        <button onclick="scegliUmanesimo(2)" class="option-btn text-left p-4 rounded-xl border border-slate-800 hover:border-orange-500/50 hover:bg-orange-500/5 transition text-xs text-slate-300">
+                            <b>Opzione B:</b> Verifico i dati incrociando fonti ufficiali, agenzie ambientali (ARPA) e testate giornalistiche accreditate prima di parlarne.
+                        </button>
+                    </div>
+
+                    <!-- FEEDBACK DINAMICO -->
+                    <div id="feedback-umanesimo" class="hidden p-4 rounded-xl text-xs leading-relaxed"></div>
+                </div>
+            </div>
+
+            <!-- HUB FISICA (SICUREZZA NELLA SEGNALETICA DI CANTIERE) -->
+            <div id="hub-fisica" class="hub-panel hidden space-y-6">
+                <div>
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-widest font-display">Modulo 3 • Fisica della Segnaletica e dei DPI</span>
+                    <h2 class="text-3xl font-bold font-display text-white mt-1">La Fisica dei Segnali di Sicurezza</h2>
+                    <p class="text-xs text-slate-400 italic">Esplora l'acustica, la dinamica degli urti e l'ottica cromatica nei cantieri</p>
+                </div>
+
+                <!-- SUB-MENU INTERATTIVO INTERNO AL MODULO FISICA -->
+                <div class="flex gap-2 border-b border-slate-800 pb-3">
+                    <button onclick="mostraFisicaSub('casco')" id="btn-sub-casco" class="px-3 py-1.5 text-xs font-bold rounded-xl transition bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                        <i class="fa-solid fa-helmet-safety mr-1"></i> 1. Casco Protettivo
+                    </button>
+                    <button onclick="mostraFisicaSub('cuffie')" id="btn-sub-cuffie" class="px-3 py-1.5 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-headphones mr-1"></i> 2. Cuffie Antirumore
+                    </button>
+                    <button onclick="mostraFisicaSub('colori')" id="btn-sub-colori" class="px-3 py-1.5 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-eye mr-1"></i> 3. I Colori della Sicurezza
+                    </button>
+                </div>
+
+                <!-- SUB-PANEL 1: IL CASCO (Teorema dell'Impulso) -->
+                <div id="fisica-sub-casco" class="fisica-sub-panel space-y-4">
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Il cartello blu rotondo <b>"Obbligo di indossare il casco"</b> risponde a una legge fondamentale della dinamica: il <b>Teorema dell'Impulso</b>. 
+                        Durante una collisione, la variazione di quantità di moto ($\Delta p = m \cdot \Delta v$) corrisponde all'impulso impresso dalla forza d'impatto ($F \cdot \Delta t$).
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
+                        <div class="space-y-4 flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-white font-bold text-sm">Esperimento: Il Drop Test d'Impatto</h4>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    Simula la caduta libera di un mattone di $2\text{ kg}$ da un'altezza di $5\text{ metri}$ sulla testa di un manichino sensore. Attiva o disattiva il casco per vedere la differenza fisica dell'impatto.
+                                </p>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="check-casco" class="sr-only peer" onchange="aggiornaSimulatoreCasco()">
+                                    <div class="relative w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    <span class="ms-3 text-xs font-bold text-slate-300">Indossa il Casco Protettivo</span>
+                                </label>
+                            </div>
+
+                            <button onclick="avviaTestImpatto()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-play"></i> Avvia Impatto Virtuale
+                            </button>
+                        </div>
+
+                        <!-- GRAFICA CADUTA / SENSORE FORZA -->
+                        <div class="bg-slate-950/80 rounded-xl p-4 border border-slate-800 flex flex-col items-center justify-center gap-3 relative min-h-[220px]">
+                            <!-- Animazione caduta virtuale -->
+                            <div class="relative w-full h-24 border-b border-dashed border-slate-800 flex justify-center items-start overflow-hidden">
+                                <span id="sim-mattone" class="absolute top-0 text-amber-600 text-2xl transition-all duration-[800ms] cubic-bezier(0.5, 0, 1, 1)"><i class="fa-solid fa-cubes"></i></span>
+                                <span id="sim-testa" class="absolute bottom-0 text-3xl text-slate-400"><i class="fa-solid fa-user-injured" id="icona-testa"></i></span>
+                            </div>
+
+                            <div class="w-full flex justify-between items-center text-xs px-2 border-t border-slate-800/40 pt-2">
+                                <span class="text-slate-500">Forza d'Impatto di Picco:</span>
+                                <span id="sim-output-forza" class="font-bold text-slate-300">-</span>
+                            </div>
+                            <div class="w-full flex justify-between items-center text-xs px-2">
+                                <span class="text-slate-500">Tempo di Collisione ($\Delta t$):</span>
+                                <span id="sim-output-tempo" class="font-bold text-slate-300">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-PANEL 2: LE CUFFIE (Acustica e Onde Sonore) -->
+                <div id="fisica-sub-cuffie" class="fisica-sub-panel hidden space-y-4">
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Il cartello blu rotondo <b>"Obbligo di usare le cuffie antirumore"</b> serve a prevenire danni all'apparato uditivo dovuti alle onde di pressione acustica. L'intensità sonora si misura in **Decibel (dB)**, una scala logaritmica dove l'esposizione prolungata sopra gli $85\text{ dB}$ genera ipoacusia irreversibile.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
+                        <div class="space-y-4 flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-white font-bold text-sm">Esperimento: Isolamento Acustico</h4>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    Seleziona un macchinario di cantiere in funzione e misura i Decibel generati. Indossa le cuffie antirumore per comprendere la fisica dell'assorbimento acustico.
+                                </p>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase font-bold text-slate-500">Sorgente Sonora Attiva</label>
+                                <select id="select-rumore" onchange="aggiornaAcustica()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-300 text-xs focus:outline-none focus:border-blue-500">
+                                    <option value="110">Martello Pneumatico (~110 dB)</option>
+                                    <option value="100">Sega Circolare Industriale (~100 dB)</option>
+                                    <option value="85">Gru in Movimento (~85 dB)</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="check-cuffie" class="sr-only peer" onchange="aggiornaAcustica()">
+                                    <div class="relative w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    <span class="ms-3 text-xs font-bold text-slate-300">Indossa le Cuffie DPI</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- ANIMAZIONE ONDA E DECODER DECIBEL -->
+                        <div class="bg-slate-950/80 rounded-xl p-4 border border-slate-800 flex flex-col items-center justify-center gap-4 min-h-[220px]">
+                            <div class="text-xs font-bold text-slate-500 uppercase">Livello di Pressione Sonora</div>
+                            
+                            <div class="flex items-end gap-1.5 h-12 justify-center w-full" id="wave-container">
+                                <div class="w-2 bg-blue-500 rounded-full h-full wave-bar" style="animation-delay: 0.1s"></div>
+                                <div class="w-2 bg-blue-500 rounded-full h-full wave-bar" style="animation-delay: 0.3s"></div>
+                                <div class="w-2 bg-blue-500 rounded-full h-full wave-bar" style="animation-delay: 0.5s"></div>
+                                <div class="w-2 bg-blue-500 rounded-full h-full wave-bar" style="animation-delay: 0.2s"></div>
+                                <div class="w-2 bg-blue-500 rounded-full h-full wave-bar" style="animation-delay: 0.4s"></div>
+                            </div>
+
+                            <div class="text-center space-y-1">
+                                <div id="display-db" class="text-2xl font-display font-bold text-red-500">110 dB</div>
+                                <div id="display-db-warning" class="text-[9px] font-bold text-red-400 uppercase">PERICOLO GRAVE DI IPOACUSIA</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-PANEL 3: OTTICA DEI COLORI (La fisica dei cartelli) -->
+                <div id="fisica-sub-colori" class="fisica-sub-panel hidden space-y-4">
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Perché i segnali di obbligo/prescrizione (come casco e cuffie) sono rotondi e <b>Blu</b>, mentre quelli di pericolo sono triangolari e <b>Gialli/Neri</b>? È una questione di **Fisica dell'Ottica** e dell'evoluzione biologica del nostro occhio.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-xl text-center space-y-2">
+                            <span class="text-3xl text-blue-500"><i class="fa-solid fa-circle"></i></span>
+                            <h4 class="text-xs font-bold text-white">Il Blu di Prescrizione</h4>
+                            <p class="text-[10px] text-slate-400 leading-relaxed">
+                                Lunghezza d'onda corta ($\lambda \approx 470\text{ nm}$). I fotorecettori retinici sensibili al blu stimolano direttamente i nuclei cerebrali che regolano l'allerta e l'attenzione vigile.
+                            </p>
+                        </div>
+                        <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-xl text-center space-y-2">
+                            <span class="text-3xl text-yellow-500"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                            <h4 class="text-xs font-bold text-white">Il Giallo di Pericolo</h4>
+                            <p class="text-[10px] text-slate-400 leading-relaxed">
+                                Lunghezza d'onda media ($\lambda \approx 570\text{ nm}$). È lo spettro di massima visibilità diurna dell'occhio umano. Ideale per catturare lo sguardo all'istante anche con nebbia o polveri.
+                            </p>
+                        </div>
+                        <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-xl text-center space-y-2">
+                            <span class="text-3xl text-emerald-500"><i class="fa-solid fa-eye"></i></span>
+                            <h4 class="text-xs font-bold text-white">Contrasto Cromatico</h4>
+                            <p class="text-[10px] text-slate-400 leading-relaxed">
+                                Nello spettro visibile, il blu è complementare al colore della terra e della ruggine. Nei cantieri, un cartello blu risalta immediatamente per contrasto d'opposizione.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center pt-2">
+                        <button onclick="validaModuloFisica()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-blue-500/20">
+                            Completa Studio della Fisica della Segnaletica
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HUB MATEMATICA (ECONOMIA CIRCOLARE) -->
+            <div id="hub-matematica" class="hub-panel hidden space-y-6">
+                <div>
+                    <span class="text-xs font-bold text-purple-400 uppercase tracking-widest font-display">Modulo 4 • Matematica</span>
+                    <h2 class="text-3xl font-bold font-display text-white mt-1">Calcolatore di Sostenibilità</h2>
+                </div>
+
+                <p class="text-sm text-slate-400">
+                    Come si progetta una città ecocompatibile e sicura? Attraverso i modelli algebrici e statistici che ottimizzano l'uso delle materie prime.
+                </p>
+
+                <!-- CALCOLATORE SLIDER CIRCOLARE -->
+                <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl space-y-6">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div>
+                            <h4 class="text-white font-bold text-sm">Modello di Riciclo Industriale</h4>
+                            <p class="text-xs text-slate-400 mt-0.5">Muovi la barra per regolare la percentuale di materiali recuperati nelle filiere del territorio.</p>
+                        </div>
+                        <div class="text-right">
+                            <span id="label-percentuale" class="text-3xl font-display font-bold text-purple-400">50%</span>
+                        </div>
+                    </div>
+
+                    <!-- Slider di controllo -->
+                    <input type="range" min="0" max="100" value="50" oninput="aggiornaSostenibilita(this.value)" class="w-full accent-purple-500 bg-slate-950 h-2.5 rounded-lg appearance-none cursor-pointer">
+
+                    <!-- Risultati matematici calcolati in tempo reale -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 flex items-center gap-4">
+                            <span class="text-2xl text-emerald-400"><i class="fa-solid fa-cloud-arrow-down"></i></span>
+                            <div>
+                                <span class="text-[10px] text-slate-500 uppercase font-bold">CO2 Ridotta all'Anno</span>
+                                <h5 class="text-lg font-bold text-white font-display" id="calc-co2">250 tonnellate</h5>
+                            </div>
+                        </div>
+                        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 flex items-center gap-4">
+                            <span class="text-2xl text-cyan-400"><i class="fa-solid fa-briefcase"></i></span>
+                            <div>
+                                <span class="text-[10px] text-slate-500 uppercase font-bold">Green Jobs Creati</span>
+                                <h5 class="text-lg font-bold text-white font-display" id="calc-jobs">15 Posti di lavoro</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HUB SCIENZE (RICICLO RAEE) -->
+            <div id="hub-scienze" class="hub-panel hidden space-y-6">
+                <div>
+                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest font-display">Modulo 5 • Scienze Chimiche e Ambientali</span>
+                    <h2 class="text-3xl font-bold font-display text-white mt-1">Il Laboratorio di Smaltimento RAEE</h2>
+                </div>
+
+                <p class="text-sm text-slate-400">
+                    Ogni anno tonnellate di rifiuti tecnologici mettono a rischio la sicurezza biologica della Terra. Smistarli e lavorarli in sicurezza è una necessità chimica.
+                </p>
+
+                <!-- MINI GIOCO DI SMISTAMENTO RAEE -->
+                <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4">
+                    <h4 class="text-white font-bold text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-flask text-emerald-400"></i> Isola Ecologica: Dove butti uno smartphone esausto?
+                    </h4>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <button onclick="smistaRAEE('sbagliato1')" class="raee-btn p-4 rounded-xl border border-slate-800 hover:border-red-500/50 hover:bg-red-500/5 transition text-left">
+                            <span class="block text-white font-bold text-xs mb-1">Cassonetto Rifiuto Secco</span>
+                            <span class="text-[10px] text-slate-400">Finisce nell'indifferenziata e viene bruciato o interrato.</span>
+                        </button>
+                        <button onclick="smistaRAEE('sbagliato2')" class="raee-btn p-4 rounded-xl border border-slate-800 hover:border-red-500/50 hover:bg-red-500/5 transition text-left">
+                            <span class="block text-white font-bold text-xs mb-1">Cassonetto Plastica</span>
+                            <span class="text-[10px] text-slate-400">È fatto principalmente di plastica e metallo, quindi va lì.</span>
+                        </button>
+                        <button onclick="smistaRAEE('corretto')" class="raee-btn p-4 rounded-xl border border-slate-800 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition text-left">
+                            <span class="block text-white font-bold text-xs mb-1">Isola Ecologica (RAEE)</span>
+                            <span class="text-[10px] text-slate-400">Smaltimento specifico in centri attrezzati autorizzati.</span>
+                        </button>
+                    </div>
+
+                    <div id="feedback-scienze" class="hidden p-4 rounded-xl text-xs leading-relaxed"></div>
+                </div>
+            </div>
+
+            <!-- HUB ARTE (SMART CITY INTERATTIVA) -->
+            <div id="hub-arte" class="hub-panel hidden space-y-6">
+                <div>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-widest font-display">Modulo 6 • Storia dell'Arte e Urbanistica</span>
+                    <h2 class="text-3xl font-bold font-display text-white mt-1">La Smart City: Estetica e Sicurezza</h2>
+                    <p class="text-xs text-slate-400 italic mt-1">La pianificazione urbana sostenibile tra arte e tecnologia</p>
+                </div>
+
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    L'urbanistica è una forma d'arte visiva e funzionale. Nelle <b>Smart City</b>, l'estetica del paesaggio si unisce alla sicurezza dei cittadini e alla tutela ecologica: la gestione della luce (inquinamento luminoso), la bioclimatizzazione degli spazi verdi e la mobilità dolce ridisegnano le nostre città rendendole spazi umani sicuri ed esteticamente coerenti.
+                </p>
+
+                <!-- PROGETTAZIONE INTERATTIVA SMART CITY -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+                    <div class="space-y-4">
+                        <h4 class="text-white font-bold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-compass-drafting text-teal-400"></i> Progetta il tuo Quartiere Smart
+                        </h4>
+                        
+                        <div class="space-y-3 text-xs">
+                            <!-- Scelta 1: Illuminazione -->
+                            <div class="space-y-1">
+                                <label class="text-slate-400 font-semibold">Illuminazione Pubblica:</label>
+                                <select id="arte-select-light" onchange="calcolaSmartCity()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-300 focus:outline-none focus:border-teal-500">
+                                    <option value="sbagliato">Lampioni tradizionali ad alta dispersione (Spreco + Inquinamento Luminoso)</option>
+                                    <option value="corretto">LED Intelligenti con sensori di movimento (Risparmio energetico + Sicurezza)</option>
+                                </select>
+                            </div>
+                            <!-- Scelta 2: Spazi Verdi -->
+                            <div class="space-y-1">
+                                <label class="text-slate-400 font-semibold">Spazi Verdi e Architettura Bioclimatica:</label>
+                                <select id="arte-select-green" onchange="calcolaSmartCity()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-300 focus:outline-none focus:border-teal-500">
+                                    <option value="sbagliato">Solo asfalto e barriere cementificate (Effetto isola di calore)</option>
+                                    <option value="corretto">Boschi verticali, giardini pensili e corridoi ecologici (Estetica + Clima)</option>
+                                </select>
+                            </div>
+                            <!-- Scelta 3: Mobilità -->
+                            <div class="space-y-1">
+                                <label class="text-slate-400 font-semibold">Infrastruttura di Mobilità:</label>
+                                <select id="arte-select-mobility" onchange="calcolaSmartCity()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-300 focus:outline-none focus:border-teal-500">
+                                    <option value="sbagliato">Priorità assoluta ai veicoli privati a combustione (Traffico + Smog)</option>
+                                    <option value="corretto">Piste ciclabili protette e micro-mobilità elettrica integrata (Sicurezza + Salute)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MONITOR EFFICIENZA URBANISTICA -->
+                    <div class="bg-slate-950/80 rounded-xl p-5 border border-slate-800 flex flex-col justify-between gap-4 relative overflow-hidden">
+                        <div class="text-center">
+                            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Indice di Sostenibilità Urbana</div>
+                            <div id="smart-city-score" class="text-4xl font-display font-bold text-red-400">Insufficiente</div>
+                        </div>
+
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between border-b border-slate-800/40 pb-1.5">
+                                <span class="text-slate-500">Impatto Estetico e Clima:</span>
+                                <span id="smart-val-estetica" class="font-bold text-red-400">Basso</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800/40 pb-1.5">
+                                <span class="text-slate-500">Sicurezza Stradale e Personale:</span>
+                                <span id="smart-val-sicurezza" class="font-bold text-red-400">Bassa</span>
+                            </div>
+                        </div>
+
+                        <div id="feedback-arte" class="text-[10px] text-slate-400 leading-relaxed text-center">
+                            Seleziona le opzioni corrette per completare la progettazione della città del futuro.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HUB CERTIFICATO FINALE -->
+            <div id="hub-certificato" class="hub-panel hidden space-y-6">
+                <div class="text-center space-y-4 py-8" id="certificato-locked-view">
+                    <span class="text-4xl text-red-500 inline-block animate-bounce"><i class="fa-solid fa-lock"></i></span>
+                    <h3 class="text-xl font-bold text-white">Certificato non ancora disponibile</h3>
+                    <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                        Completa le attività di tutti e 6 i moduli per sbloccare e stampare il tuo <b>Certificato di Eccellenza in Educazione Civica</b> firmato e intestato a tuo nome.
+                    </p>
+                </div>
+
+                <div class="hidden space-y-6" id="certificato-unlocked-view">
+                    <div class="text-center space-y-2">
+                        <span class="text-4xl text-emerald-400 inline-block"><i class="fa-solid fa-circle-check"></i></span>
+                        <h3 class="text-2xl font-bold text-white font-display">Tutti i Moduli Completati!</h3>
+                        <p class="text-xs text-slate-400">Il tuo Certificato Ufficiale è stato generato. Puoi stamparlo direttamente per consegnarlo alla professoressa.</p>
+                    </div>
+
+                    <!-- Layout anteprima certificato -->
+                    <div class="bg-white text-slate-900 border-8 border-slate-200 p-8 rounded-2xl font-serif text-center space-y-6 relative max-w-2xl mx-auto shadow-2xl">
+                        <div class="text-xs tracking-widest uppercase font-bold text-slate-500">I.I.S. "Maria Pia" • Taranto</div>
+                        
+                        <div class="space-y-2">
+                            <h2 class="text-3xl font-bold font-display text-slate-900">Certificato di Eccellenza</h2>
+                            <p class="text-xs text-slate-500 italic">in Educazione Civica e Cittadinanza Attiva</p>
+                        </div>
+
+                        <p class="text-xs">Si attesta che</p>
+                        <h3 class="text-2xl font-bold text-emerald-700 font-display">Hai completato il percorso</h3>
+                        <p class="text-xs max-w-md mx-auto leading-relaxed">
+                            didattico transdisciplinare <b>"Sicurezza del Cittadino 2.0"</b> affrontando con merito i temi di Cittadinanza Democratica e Illuminismo (Storia), Etica Ambientale (Filosofia), Analisi Informativa (Italiano), Prevenzione del Rischio Industriale (Fisica), Economia Civcolare (Matematica), Ciclo dei RAEE (Scienze) e Progettazione delle Smart City (Arte).
+                        </p>
+
+                        <div class="flex justify-between items-end pt-6 text-[10px] text-slate-500 font-sans px-8">
+                            <div class="text-left">
+                                <p>Classe: <strong>4LSB</strong></p>
+                                <p>Anno Scolastico: <strong>2025/2026</strong></p>
+                            </div>
+                            <div class="text-right">
+                                <p class="border-b border-slate-300 pb-1 italic">Simone Stella</p>
+                                <p class="pt-1">Firma del Candidato</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center">
+                        <button onclick="window.print()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm px-6 py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 flex items-center gap-2">
+                            <i class="fa-solid fa-print"></i> Stampa Certificato
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER DELLA SCHERMATA INTERATTIVA -->
+            <div class="border-t border-slate-800 mt-6 pt-4 flex justify-between items-center text-xs text-slate-500 no-print">
+                <span>Simone Stella • 4LSB • Maria Pia</span>
+                <span id="current-page-indicator">Centrale di Controllo</span>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- AREA DEDICATA UNICAMENTE ALLA STAMPA FISICA -->
+    <div class="hidden print-only p-12 text-slate-900 font-serif" id="print-diploma-element">
+        <div style="border: 10px double #cbd5e1; padding: 40px; text-align: center; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="font-size: 14px; font-weight: bold; text-transform: uppercase; tracking: 2px; color: #475569;">
+                I.I.S. "Maria Pia" • Taranto
+            </div>
+
+            <div style="margin-top: 20px;">
+                <h1 style="font-size: 38px; font-weight: bold; margin: 0; font-family: 'Space Grotesk', sans-serif;">ATTESTATO DI MERITO</h1>
+                <p style="font-size: 14px; font-style: italic; color: #64748b; margin-top: 5px;">Percorso di Educazione Civica - Cittadino 2.0</p>
+            </div>
+
+            <div style="margin-top: 25px;">
+                <p style="font-size: 14px; margin: 0;">Si attesta che</p>
+                <h2 style="font-size: 32px; font-weight: bold; color: #047857; margin: 15px 0; font-family: 'Space Grotesk', sans-serif;">HAI COMPLETATO IL PERCORSO</h2>
+                <p style="font-size: 12px; line-height: 1.6; max-width: 750px; margin: 0 auto; color: #334155;">
+                    didattico transdisciplinare dedicato all'analisi della sicurezza moderna, integrando brillantemente lo studio dell'eredità illuminista tra ragione e algoritmo (Storia), dell'Etica della Responsabilità di Hans Jonas (Filosofia), della precisione linguistica delle fonti (Italiano), della fisica applicata ai sistemi di segnalazione e di assorbimento d'impulso dei DPI (Fisica), dei modelli statistici di ottimizzazione dell'economia circolare (Matematica), del recupero sicuro delle Terre Rare dai rifiuti RAEE (Scienze) e dello sviluppo estetico-funzionale delle Smart City (Arte).
+                </p>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 30px; font-size: 11px; color: #475569; font-family: sans-serif; padding: 0 40px;">
+                <div style="text-align: left;">
+                    <p style="margin: 2px 0;">Classe: <strong>4LSB</strong></p>
+                    <p style="margin: 2px 0;">Sede Scolastica: <strong>I.I.S. "Maria Pia" - Taranto</strong></p>
+                    <p style="margin: 2px 0;">A.S. <strong>2025/2026</strong></p>
+                </div>
+                <div style="text-align: right; width: 180px;">
+                    <p style="border-bottom: 1px solid #94a3b8; padding-bottom: 5px; font-style: italic; font-size: 12px; margin: 0;">Simone Stella</p>
+                    <p style="margin: 5px 0 0 0;">Firma dell'Alunno</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICA MODALE PERSONALIZZATA -->
+    <div id="custom-modal" class="hidden fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-[100] flex items-center justify-center p-4 no-print">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl max-w-md w-full text-center space-y-4 shadow-2xl">
+            <div class="text-blue-500 text-5xl" id="modal-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <h3 id="modal-title" class="text-xl font-bold font-display text-white">Notifica</h3>
+            <p id="modal-body" class="text-xs text-slate-400 leading-relaxed"></p>
+            <button onclick="closeModal()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-blue-500/20">Capito!</button>
+        </div>
+    </div>
+
+    <!-- FOOTER GENERALE DI PAGINA -->
+    <footer class="no-print border-t border-slate-900 bg-slate-950/80 text-slate-500 text-xs px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2">
+        <div>
+            Compito di Educazione Civica • Simone Stella • IIS Maria Pia
+        </div>
+        <div class="flex gap-4">
+            <span>Storia</span>
+            <span>Umanesimo</span>
+            <span>Fisica</span>
+            <span>Matematica</span>
+            <span>Scienze</span>
+            <span>Arte</span>
+        </div>
+    </footer>
+
+    <!-- LOGICA SCRIPT -->
+    <script>
+        // Stato del gioco e progressi di Simone Stella
+        const progressi = {
+            storia: false,
+            umanesimo: false,
+            fisica: false,
+            matematica: false,
+            scienze: false,
+            arte: false,
+            punteggio: 0
+        };
+
+        // Gestione delle notifiche modali personalizzate (No alert nativi)
+        function showModal(title, text, iconClass = "fa-solid fa-circle-check text-emerald-400") {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = text;
+            document.getElementById('modal-icon').innerHTML = `<i class="${iconClass}"></i>`;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        // Funzione per mostrare e nascondere gli Hub interattivi
+        function attivaHub(id) {
+            // Nascondi tutti i pannelli
+            document.querySelectorAll('.hub-panel').forEach(panel => panel.classList.add('hidden'));
+            
+            // Mostra il pannello corrente
+            document.getElementById(`hub-${id}`).classList.remove('hidden');
+
+            // Gestisci l'attivazione grafica dei bottoni del menu
+            document.querySelectorAll('.hub-btn').forEach(btn => {
+                btn.className = "hub-btn flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-left transition-all text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent";
+            });
+
+            // Colora il bottone attivo
+            const activeBtn = document.getElementById(`btn-${id}`);
+            if (activeBtn) {
+                activeBtn.className = "hub-btn flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-left transition-all bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/10";
+            }
+
+            // Aggiorna l'indicatore di pagina in basso
+            const labels = {
+                welcome: "Dashboard",
+                storia: "Modulo 1 • Storia (Illuminismo)",
+                umanesimo: "Modulo 2 • Umanesimo ed Etica",
+                fisica: "Modulo 3 • Fisica della Segnaletica",
+                matematica: "Modulo 4 • Matematica Circolare",
+                scienze: "Modulo 5 • Scienze Chimiche e RAEE",
+                arte: "Modulo 6 • Arte e Smart City",
+                certificato: "Attestato Finale"
+            };
+            document.getElementById('current-page-indicator').textContent = labels[id] || "Dettaglio";
+        }
+
+        // 1. GIOCO STORIA (ILLUMINISMO)
+        function scegliStoria(scelta) {
+            const feedback = document.getElementById('feedback-storia');
+            feedback.classList.remove('hidden', 'bg-red-500/10', 'text-red-400', 'border-red-500/20', 'bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+            feedback.classList.add('border');
+
+            if (scelta === 1) {
+                feedback.classList.add('bg-red-500/10', 'text-red-400', 'border-red-500/20');
+                feedback.innerHTML = `
+                    <p class="font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Errore di Valutazione Critica.</p>
+                    Affidarsi ciecamente a un algoritmo impreciso contraddice la lezione dell'Illuminismo. Gli illuministi combattevano i dogmi indiscutibili. Gli algoritmi moderni, ereditando i pregiudizi umani dei dati storici, necessitano del filtro della ragione umana e di trasparenza etica. Riprova!
+                `;
+            } else if (scelta === 2) {
+                feedback.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+                feedback.innerHTML = `
+                    <p class="font-bold"><i class="fa-solid fa-circle-check"></i> Ottimo! Risposta Storicamente Coerente.</p>
+                    Esatto! Proprio come la "ragione" degli illuministi combatteva i vecchi assolutismi, oggi la trasparenza algoritmica garantisce che le intelligenze artificiali rimangano strumenti democratici e sicuri al servizio dei diritti dell'uomo. <b>+100 Punti Sicurezza!</b>
+                `;
+                if (!progressi.storia) {
+                    progressi.storia = true;
+                    aggiornaPunteggio(100);
+                    document.getElementById('status-storia').textContent = "100%";
+                    document.getElementById('status-storia').className = "text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold";
+                    controllaSbloccoCertificato();
+                }
+            }
+        }
+
+        // 2. GIOCO UMANESIMO
+        function scegliUmanesimo(scelta) {
+            const feedback = document.getElementById('feedback-umanesimo');
+            feedback.classList.remove('hidden', 'bg-red-500/10', 'text-red-400', 'border-red-500/20', 'bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+            feedback.classList.add('border');
+
+            if (scelta === 1) {
+                feedback.classList.add('bg-red-500/10', 'text-red-400', 'border-red-500/20');
+                feedback.innerHTML = `
+                    <p class="font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Attenzione! Questa scelta viola la precisione informativa.</p>
+                    Condividendo acriticamente l'articolo inquini il panorama informativo del cittadino 2.0 (Fake News). Come ci ricorda Italo Calvino, la parola ha un valore di precisione e onestà intellettuale. Riprova per rispondere correttamente!
+                `;
+            } else if (scelta === 2) {
+                feedback.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+                feedback.innerHTML = `
+                    <p class="font-bold"><i class="fa-solid fa-circle-check"></i> Esatto! Risposta eticamente e civilmente corretta.</p>
+                    Hai applicato la precisione di Calvino e il "Principio Responsabilità" di Hans Jonas: le informazioni che propaghiamo sul web devono essere verificate per proteggere la stabilità e la sicurezza della comunità. <b>+100 Punti Sicurezza!</b>
+                `;
+                if (!progressi.umanesimo) {
+                    progressi.umanesimo = true;
+                    aggiornaPunteggio(100);
+                    document.getElementById('status-umanesimo').textContent = "100%";
+                    document.getElementById('status-umanesimo').className = "text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold";
+                    controllaSbloccoCertificato();
+                }
+            }
+        }
+
+        // 3. LOGICA FISICA: SUB-MENU E SIMULAZIONI
+        function mostraFisicaSub(subId) {
+            // Nascondi tutti i sotto-pannelli di fisica
+            document.querySelectorAll('.fisica-sub-panel').forEach(p => p.classList.add('hidden'));
+            
+            // Mostra quello selezionato
+            document.getElementById(`fisica-sub-${subId}`).classList.remove('hidden');
+
+            // Reset stile bottoni
+            const subBtns = ['casco', 'cuffie', 'colori'];
+            subBtns.forEach(b => {
+                document.getElementById(`btn-sub-${b}`).className = "px-3 py-1.5 text-xs font-bold rounded-xl transition text-slate-400 hover:text-white";
+            });
+
+            // Evidenzia bottone attivo
+            document.getElementById(`btn-sub-${subId}`).className = "px-3 py-1.5 text-xs font-bold rounded-xl transition bg-blue-500/20 text-blue-300 border border-blue-500/30";
+        }
+
+        // 3.1 FISICA - GESTIONE DROP TEST CASCO
+        let cascoInUso = false;
+        function aggiornaSimulatoreCasco() {
+            cascoInUso = document.getElementById('check-casco').checked;
+            const icona = document.getElementById('icona-testa');
+            if (cascoInUso) {
+                icona.className = "fa-solid fa-user-shield text-blue-400";
+            } else {
+                icona.className = "fa-solid fa-user-injured text-red-400 animate-pulse";
+            }
+        }
+
+        function avviaTestImpatto() {
+            const mattone = document.getElementById('sim-mattone');
+            const outputForza = document.getElementById('sim-output-forza');
+            const outputTempo = document.getElementById('sim-output-tempo');
+            const icona = document.getElementById('icona-testa');
+
+            // Reset animazione
+            mattone.style.transition = 'none';
+            mattone.style.top = '0px';
+
+            setTimeout(() => {
+                // Avvia caduta libera accelerata
+                mattone.style.transition = 'top 0.6s cubic-bezier(0.55, 0.055, 0.675, 0.19)';
+                mattone.style.top = '60px'; // Posizione di impatto con la testa
+                
+                setTimeout(() => {
+                    // Risultato impatto legato alla fisica dell'impulso
+                    if (cascoInUso) {
+                        outputForza.innerHTML = "<span class='text-emerald-400 font-bold'>450 N (Limite sicuro)</span>";
+                        outputTempo.innerHTML = "<span class='text-emerald-400 font-bold'>0.08 s (Molto prolungato)</span>";
+                        icona.className = "fa-solid fa-user-shield text-emerald-400";
+                    } else {
+                        outputForza.innerHTML = "<span class='text-red-500 font-bold'>6800 N (Letale!)</span>";
+                        outputTempo.innerHTML = "<span class='text-red-400 font-bold'>0.003 s (Violento e immediato)</span>";
+                        icona.className = "fa-solid fa-skull-crossbones text-red-500 animate-bounce";
+                    }
+                }, 600);
+            }, 50);
+        }
+
+        // 3.2 FISICA - GESTIONE ACUSTICA / CUFFIE
+        function aggiornaAcustica() {
+            const dbIniziali = parseInt(document.getElementById('select-rumore').value);
+            const cuffieAttive = document.getElementById('check-cuffie').checked;
+            const displayDb = document.getElementById('display-db');
+            const warning = document.getElementById('display-db-warning');
+            const waveBars = document.querySelectorAll('.wave-bar');
+
+            let dbFinali = dbIniziali;
+            if (cuffieAttive) {
+                dbFinali = dbIniziali - 30; // Le cuffie abbattono di ~30 dB l'energia
+            }
+
+            displayDb.textContent = dbFinali + " dB";
+
+            // Modifica l'animazione dell'onda sonora basandosi sull'intensità effettiva
+            waveBars.forEach(bar => {
+                if (cuffieAttive) {
+                    bar.style.animationPlayState = 'paused';
+                    bar.style.transform = 'scaleY(0.2)';
+                    bar.style.backgroundColor = '#10b981';
+                } else {
+                    bar.style.animationPlayState = 'running';
+                    bar.style.transform = '';
+                    bar.style.backgroundColor = '#3b82f6';
+                }
+            });
+
+            // Valutazione della soglia di sicurezza logaritmica
+            if (dbFinali >= 100) {
+                displayDb.className = "text-2xl font-display font-bold text-red-500";
+                warning.textContent = "PERICOLO GRAVE (Danni all'udito in pochi minuti)";
+                warning.className = "text-[9px] font-bold text-red-400 uppercase";
+            } else if (dbFinali >= 80) {
+                displayDb.className = "text-2xl font-display font-bold text-orange-500";
+                warning.textContent = "SOGLIA DI RISCHIO (Richiesto uso costante DPI)";
+                warning.className = "text-[9px] font-bold text-orange-400 uppercase";
+            } else {
+                displayDb.className = "text-2xl font-display font-bold text-emerald-400";
+                warning.textContent = "SITUAZIONE SECURA (Attenuazione protetta)";
+                warning.className = "text-[9px] font-bold text-emerald-400 uppercase";
+            }
+        }
+
+        // 3.3 FISICA - VALIDA MODULO
+        function validaModuloFisica() {
+            if (!progressi.fisica) {
+                progressi.fisica = true;
+                aggiornaPunteggio(100);
+                document.getElementById('status-fisica').textContent = "100%";
+                document.getElementById('status-fisica').className = "text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold";
+                controllaSbloccoCertificato();
+            }
+            showModal(
+                "Modulo Completato!", 
+                "Ottimo lavoro, Simone! Hai completato con successo l'analisi fisica della segnaletica stradale e dei DPI. Il modulo è stato registrato al 100%.", 
+                "fa-solid fa-square-poll-horizontal text-emerald-400 text-5xl"
+            );
+            attivaHub('matematica');
+        }
+
+        // 4. CALCOLATORE MATEMATICA (SOSTENIBILITÀ)
+        function aggiornaSostenibilita(valore) {
+            document.getElementById('label-percentuale').textContent = valore + "%";
+            
+            // Formule di calcolo lineare simulate
+            const co2Salvata = Math.round(valore * 5); // 5 tonnellate per punto percentuale
+            const postiLavoro = Math.round(valore * 0.3); // 0.3 posti di lavoro per punto percentuale
+
+            document.getElementById('calc-co2').textContent = co2Salvata + " tonnellate";
+            document.getElementById('calc-jobs').textContent = postiLavoro + " Posti di lavoro";
+
+            // Se l'utente esplora il calcolatore portandolo a un livello virtuoso (>75%) sblocca il modulo
+            if (valore >= 75 && !progressi.matematica) {
+                progressi.matematica = true;
+                aggiornaPunteggio(100);
+                document.getElementById('status-matematica').textContent = "100%";
+                document.getElementById('status-matematica').className = "text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold";
+                controllaSbloccoCertificato();
+            }
+        }
+
+        // 5. SCIENZE (SMISTAMENTO RAEE)
+        function smistaRAEE(scelta) {
+            const feedback = document.getElementById('feedback-scienze');
+            feedback.classList.remove('hidden', 'bg-red-500/10', 'text-red-400', 'border-red-500/20', 'bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+            feedback.classList.add('border');
+
+            if (scelta === 'sbagliato1' || scelta === 'sbagliato2') {
+                feedback.classList.add('bg-red-500/10', 'text-red-400', 'border-red-500/20');
+                feedback.innerHTML = `
+                    <p class="font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Errore Grave di Smaltimento Chimico!</p>
+                    I RAEE non possono essere gettati nei normali cassonetti. Se finiscono in discarica o inceneriti, liberano metalli pesanti tossici inquinando la biosfera e minacciando la salute umana. Riprova!
+                `;
+            } else if (scelta === 'corretto') {
+                feedback.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+                feedback.innerHTML = `
+                    <p class="font-bold"><i class="fa-solid fa-circle-check"></i> Smaltimento Sicuro Effettuato!</p>
+                    I RAEE conferiti all'Isola Ecologica vengono trattati per separare i materiali termoplastici ed estrarre in sicurezza metalli nobili e <b>Terre Rare</b> (neodimio, cobalto), rigenerando materie prime preziose. <b>+100 Punti Sicurezza!</b>
+                `;
+
+                if (!progressi.scienze) {
+                    progressi.scienze = true;
+                    aggiornaPunteggio(100);
+                    document.getElementById('status-scienze').textContent = "100%";
+                    document.getElementById('status-scienze').className = "text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold";
+                    controllaSbloccoCertificato();
+                }
+            }
+        }
+
+        // 6. ARTE (CALCOLA STATO SMART CITY)
+        function calcolaSmartCity() {
+            const light = document.getElementById('arte-select-light').value;
+            const green = document.getElementById('arte-select-green').value;
+            const mobility = document.getElementById('arte-select-mobility').value;
+
+            const scoreLabel = document.getElementById('smart-city-score');
+            const valEstetica = document.getElementById('smart-val-estetica');
+            const valSicurezza = document.getElementById('smart-val-sicurezza');
+            const feedback = document.getElementById('feedback-arte');
+
+            let corrette = 0;
+            if (light === 'corretto') corrette++;
+            if (green === 'corretto') corrette++;
+            if (mobility === 'corretto') corrette++;
+
+            // Aggiorna l'interfaccia in base alle risposte dell'utente
+            if (corrette === 0) {
+                scoreLabel.textContent = "Insufficiente";
+                scoreLabel.className = "text-4xl font-display font-bold text-red-500 animate-pulse";
+                valEstetica.textContent = "Basso";
+                valEstetica.className = "font-bold text-red-400";
+                valSicurezza.textContent = "Bassa";
+                valSicurezza.className = "font-bold text-red-400";
+                feedback.textContent = "Il quartiere soffre di forte inquinamento luminoso, degrado estetico dovuto alle colate di cemento e alti rischi di inquinamento atmosferico e acustico.";
+            } else if (corrette < 3) {
+                scoreLabel.textContent = "Intermedio";
+                scoreLabel.className = "text-4xl font-display font-bold text-orange-400";
+                valEstetica.textContent = "Medio";
+                valEstetica.className = "font-bold text-orange-400";
+                valSicurezza.textContent = "Media";
+                valSicurezza.className = "font-bold text-orange-400";
+                feedback.textContent = "Il quartiere ha delle buone iniziative, ma permangono criticità strutturali. Ottimizza tutte le scelte urbanistiche per sbloccare l'efficienza massima.";
+            } else if (corrette === 3) {
+                scoreLabel.textContent = "Eccellente!";
+                scoreLabel.className = "text-4xl font-display font-bold text-emerald-400";
+                valEstetica.textContent = "Massimo";
+                valEstetica.className = "font-bold text-emerald-400";
+                valSicurezza.textContent = "Eccellente";
+                valSicurezza.className = "font-bold text-emerald-400";
+                feedback.innerHTML = "<b>Progetto Approvato!</b> Unendo l'estetica dell'architettura bioclimatica (boschi verticali) e l'efficienza tecnologica dei LED e della mobilità elettrica protetta, hai costruito una Smart City sicura, vivibile e bellissima. <b>+100 Punti Sicurezza!</b>";
+
+                if (!progressi.arte) {
+                    progressi.arte = true;
+                    aggiornaPunteggio(100);
+                    document.getElementById('status-arte').textContent = "100%";
+                    document.getElementById('status-arte').className = "text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold";
+                    controllaSbloccoCertificato();
+                }
+            }
+        }
+
+        // GESTIONE PUNTEGGI E SBLOCCO DIPLOMA (SU 600 PUNTI!)
+        function aggiornaPunteggio(punti) {
+            progressi.punteggio += punti;
+            document.getElementById('score-counter').textContent = progressi.punteggio + " / 600";
+            
+            // Calcola percentuale barra di avanzamento
+            const pct = (progressi.punteggio / 600) * 100;
+            document.getElementById('score-progressbar').style.width = pct + "%";
+        }
+
+        function controllaSbloccoCertificato() {
+            if (progressi.storia && progressi.umanesimo && progressi.fisica && progressi.matematica && progressi.scienze && progressi.arte) {
+                // Sblocca la slide del certificato
+                document.getElementById('certificato-locked-view').classList.add('hidden');
+                document.getElementById('certificato-unlocked-view').classList.remove('hidden');
+                
+                // Rimuovi l'icona lucchetto
+                const lock = document.getElementById('lock-certificato');
+                lock.className = "fa-solid fa-circle-check text-xs text-emerald-400";
+            }
+        }
+    </script>
+</body>
+</html>
